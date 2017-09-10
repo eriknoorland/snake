@@ -4,6 +4,7 @@
   const speed = 100;
   const bodySize = 10;
   const bounds = { minX: 0, maxX: canvas.width - bodySize, minY: 0, maxY: canvas.height - bodySize};
+  
   let velocity = {};
   let snake = [];
   let food = {};
@@ -60,37 +61,34 @@
 
   function drawRect(x, y, width, height, color) {
     context.fillStyle = color;
-    context.fillRect(x, y, bodySize, bodySize);
+    context.fillRect(x, y, width, height);
   }
 
-  function addBody(position) {
-    snake.push({
-      x: position.x + velocity.x * -1,
-      y: position.y + velocity.y * -1,
-    });
+  function addBody({ x, y }) {
+    snake.push({ x: x + velocity.x * -1, y: y + velocity.y * -1 });
   }
 
-  function hasHitTarget(target, object) {
-    return object.x === target.x && object.y === target.y;
+  function hasHitTarget({ x: x1, y: y1 }, { x: x2, y: y2 }) {
+    return x2 === x1 && y2 === y1;
   }
 
   function hasHitOwnTail(snake) {
     return !!snake.find((body, index) => index && hasHitTarget(body, snake[0]));
   }
 
-  function isOutOfBounds({minX, maxX, minY, maxY}, target) {
-    return target.x < minX || target.x > maxX || target.y < minY || target.y > maxY;
+  function isOutOfBounds({ minX, maxX, minY, maxY }, { x, y }) {
+    return x < minX || x > maxX || y < minY || y > maxY;
   }
 
-  function onKeyDown(event) {
-    if (!velocity.x && (event.keyCode === 37 || event.keyCode === 39)) {
-      velocity.x = event.keyCode === 37 ? -1 : 1;
+  function onKeyDown({ keyCode }) {
+    if (!velocity.x && (keyCode === 37 || keyCode === 39)) {
+      velocity.x = keyCode === 37 ? -1 : 1;
       velocity.y = 0;
     }
 
-    if (!velocity.y && (event.keyCode === 38 || event.keyCode === 40)) {
+    if (!velocity.y && (keyCode === 38 || keyCode === 40)) {
       velocity.x = 0;
-      velocity.y = event.keyCode === 38 ? -1 : 1;
+      velocity.y = keyCode === 38 ? -1 : 1;
     }
   }
 
